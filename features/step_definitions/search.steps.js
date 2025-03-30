@@ -1,8 +1,24 @@
 const puppeteer = require("puppeteer");
 const chai = require("chai");
 const expect = chai.expect;
-const { Given, When, Then, Before, After } = require("cucumber");
-const { clickElement, getText } = require("../../lib/commands.js");
+const {
+    Given,
+    When,
+    Then,
+    Before,
+    After,
+    setDefaultTimeout,
+} = require("cucumber");
+const {
+    clickElement,
+    isActive,
+    isVisible,
+    getText,
+    clickByText,
+    clickElementXPath,
+} = require("../../lib/commands.js");
+
+setDefaultTimeout(30000);
 
 Before(async function () {
     const browser = await puppeteer.launch({ headless: false, slowMo: 50 });
@@ -19,33 +35,47 @@ After(async function () {
 
 Given(
     "пользователь открывает сайт кинотеатра, выбирает завтрашний день и открывает первый доступный сеанс",
-    function () {
-        // Write code here that turns the phrase above into concrete actions
-        return "pending";
+    async function () {
+        await this.page.goto("https://qamid.tmweb.ru/client/index.php", {
+            setTimeout: 10000,
+        });
+        await clickElement(this.page, "a:nth-child(2)"); // Выбираем завтрашний день
+        return await clickElementXPath(
+            this.page,
+            "/html[1]/body[1]/main[1]/section[1]/div[2]/ul[1]/li[1]/a[1]", // Выбираем первый сеанс
+        );
     },
 );
 
-When("пользователь выбирает два места", function () {
-    // Write code here that turns the phrase above into concrete actions
-    return "pending";
+When("пользователь выбирает два места", async function () {
+    const selectorNotTakenNotSelected =
+        ".buying-scheme__chair_standart:not(.buying-scheme__chair_taken):not(.buying-scheme__chair_selected)";
+    await clickElement(this.page, selectorNotTakenNotSelected);
+    return await clickElement(this.page, selectorNotTakenNotSelected);
 });
 
-Then("кнопка {string} становится активна", function (string) {
-    // Write code here that turns the phrase above into concrete actions
-    return "pending";
+Then("кнопка {string} становится активна", async function (string) {
+    const expectedState = true;
+    const expectedTextButton = string;
+    const actualState = await isActive(this.page, ".acceptin-button");
+    const actualTextButton = await getText(this.page, ".acceptin-button");
+    expect(expectedState).to.equal(actualState);
+    expect(expectedTextButton).to.equal(actualTextButton);
 });
 
-When("пользователь выбирает место", function () {
-    // Write code here that turns the phrase above into concrete actions
-    return "pending";
+When("пользователь выбирает место", async function () {
+    return await clickElement(
+        this.page,
+        ".buying-scheme__chair_standart:not(.buying-scheme__chair_taken):not(.buying-scheme__chair_selected)",
+    );
 });
 
-When("пользователь нажимает на кнопку {string}", function (string) {
-    // Write code here that turns the phrase above into concrete actions
-    return "pending";
+When("пользователь нажимает на кнопку {string}", async function (string) {
+    return await clickByText(this.page, string);
 });
 
-Then("форма с выбором мест продолжает отображаться", function () {
-    // Write code here that turns the phrase above into concrete actions
-    return "pending";
+Then("форма с выбором мест продолжает отображаться", async function () {
+    const expectedState = true;
+    const actualState = await isVisible(this.page, ".buying-scheme__wrapper");
+    expect(expectedState).to.equal(actualState);
 });
