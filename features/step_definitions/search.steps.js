@@ -15,7 +15,7 @@ const {
     isVisible,
     getText,
     clickByText,
-    clickElementXPath,
+    clickElementInArray,
 } = require("../../lib/commands.js");
 
 setDefaultTimeout(30000);
@@ -40,18 +40,18 @@ Given(
             setTimeout: 10000,
         });
         await clickElement(this.page, "a:nth-child(2)"); // Выбираем завтрашний день
-        return await clickElementXPath(
+        return await clickElement(
             this.page,
-            "/html[1]/body[1]/main[1]/section[1]/div[2]/ul[1]/li[1]/a[1]", // Выбираем первый сеанс
-        );
+            ".movie-seances__list li:first-child a",
+        ); // Выбираем первый сеанс
     },
 );
 
 When("пользователь выбирает два места", async function () {
     const selectorNotTakenNotSelected =
-        ".buying-scheme__chair_standart:not(.buying-scheme__chair_taken):not(.buying-scheme__chair_selected)";
-    await clickElement(this.page, selectorNotTakenNotSelected);
-    return await clickElement(this.page, selectorNotTakenNotSelected);
+        ".buying-scheme__chair_standart:not(.buying-scheme__chair_taken)";
+    await clickElementInArray(this.page, selectorNotTakenNotSelected, 0);
+    return await clickElementInArray(this.page, selectorNotTakenNotSelected, 1);
 });
 
 Then("кнопка {string} становится активна", async function (string) {
@@ -66,7 +66,7 @@ Then("кнопка {string} становится активна", async function
 When("пользователь выбирает место", async function () {
     return await clickElement(
         this.page,
-        ".buying-scheme__chair_standart:not(.buying-scheme__chair_taken):not(.buying-scheme__chair_selected)",
+        ".buying-scheme__chair_standart:not(.buying-scheme__chair_taken)",
     );
 });
 
