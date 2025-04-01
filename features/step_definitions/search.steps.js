@@ -48,10 +48,10 @@ Given(
 );
 
 When("пользователь выбирает два места", async function () {
-    const selectorNotTakenNotSelected =
+    const selectorNotTaken =
         ".buying-scheme__chair_standart:not(.buying-scheme__chair_taken)";
-    await clickElementInArray(this.page, selectorNotTakenNotSelected, 0);
-    return await clickElementInArray(this.page, selectorNotTakenNotSelected, 1);
+    await clickElementInArray(this.page, selectorNotTaken, 0);
+    return await clickElementInArray(this.page, selectorNotTaken, 1);
 });
 
 Then("кнопка {string} становится активна", async function (string) {
